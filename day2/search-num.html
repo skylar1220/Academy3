@@ -1,0 +1,39 @@
+<!-- 1~100 사이의 숫자 중에서 랜덤하게 컴퓨터가 하나 선택하면
+사람이 숫자를 예측해서
+사람 기준으로 사람 > 컴퓨터 -> 크다 -->
+
+<body>
+    <div style="text-align: center;">
+        <label style="margin: 20; font-size:25px;">1~100 사이의 값을 예측하세요</label> <br>
+        <label>예측값</label> <input style="margin: 20px;">
+        <button>확인</button>
+        <br>
+        <span></span>
+    </div>
+</body>
+
+<!-- 태그객체 생성 -->
+<script>
+    const com_number = parseInt(Math.random() * 100 + 1);
+    const $label = document.querySelector('label');
+    const $input = document.querySelector('input');
+    const $button = document.querySelector('button');
+    const $span = document.querySelector('span');
+
+</script>
+
+<!-- 이벤트 등록 -->
+<script>
+    $button.addEventListener('click', () => {
+        let human = parseInt($input.value);
+        if (com_number == human) {
+            $span.textContent = '정답입니다.'
+        } else if (com_number < human) {
+            $span.textContent = '크다.'
+        } else {
+            $span.textContent = '작다.'
+        }
+
+    });
+
+</script>

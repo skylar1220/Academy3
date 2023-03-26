@@ -1,0 +1,61 @@
+<button id = "btn1">누르세요1</button>
+<button id = "btn2">누르세요2</button>
+<button id = "btn3">누르세요3</button>
+<script>
+    const numbers = [10, 15, 20, 25, 30, 35];
+    const testf1 = () => {
+    // for (let index = 0; index < numbers.length; index++) {
+    //     if (numbers[index] === 20) {
+    //         return;
+    //     }
+    //     console.log (numbers[index]);
+    // }
+    numbers.forEach( x => {
+        if (x === 20){
+            return;
+        }
+        console.log(x);
+    });
+
+}
+const testf2 = () => {
+    numbers.some(x => {
+        if (x == 20){
+            return true;    // true면 탈출 , false면 continue
+        }
+        console.log(x);
+    })
+}
+const testf3 = () => {
+    // 조건을 모두 만족하면 true
+    // 특징: 해당 조건을 만족하지 않는 값이 나타나면 순환을 멈춘다.
+    const result = numbers.every(x => x > 0);
+    console.log(result);
+}
+
+const $button1 = document.querySelector('#btn1');
+$button1.addEventListener('click', testf1);
+
+const $button2 = document.querySelector('#btn2');
+$button2.addEventListener('click', testf2);
+
+const $button3 = document.querySelector('#btn3');
+$button3.addEventListener('click', testf3);
+</script>
+
+
+<!--
+    0. forEach
+
+    1. return
+    - 약간 자바의 continue 같은 애 
+    - 자기만 빠져나오고 뒤에는 계속 동작함
+
+    2. some
+    - true 써주면 자바 return 처럼 바로 나올 수 있음
+    - 생략, false면 continue 처럼
+
+    3. every
+    - 조건을 모두 만족하면 true (자바&처럼)
+    - 특징: 해당 조건을 만족하지 않는 값이 나타나면 순환을 멈춘다.
+ -->

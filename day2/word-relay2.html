@@ -1,0 +1,68 @@
+<body>
+    <div>
+        <span id="order">1</span> 번째 참가자
+    </div>
+    <div>
+        제시어: <span id="word"></span>
+    </div>
+    <input type="text">
+    <button> 입력 </button>
+
+</body>
+
+<script>
+    const number = Number(prompt("참가자 수를 입력하세요"));
+    const $button = document.querySelector('button');
+    const $input = document.querySelector('input');
+    const $word = document.querySelector('#word');
+    const $order = document.querySelector('#order');
+
+    let word; // 제시어
+    let newWord; // 현재 단어
+
+    wordHistory = [];
+
+    const onClickButton = () => {
+        if (number === Number($order.textContent)) {                // 조건1o. order 안의 숫자가 입력참가자수와 같을 때 
+            $order.textContent = 0;                                  // order안 숫자를 1로 바꾸고
+        }
+        
+        if (number != Number($order.textContent)) {                     // 조건1x. order안 숫자가 입력참가자수 안됐을 때
+            $input.value = "";                                         // 입력창초기화                  
+            $order.textContent = Number($order.textContent) + 1;       // 참가자번호표출인order안 숫자1증가시키기
+
+            if (!word) {                                                            // 조건2o. 제시어에 들어있는 단어가 없을때
+                word = newWord; // 입력한 단어가 제시어
+                $word.textContent = word; // 화면에 단어 표시 <span id = "word"> 여기! 
+                wordHistory.push(newWord);
+            }
+            else {
+                // 조건2o. 제시어에 들어있는 단어가 있을때
+                if (word[word.length - 1] === newWord[0]) {         // 조건3o.제시어막글자=새첫글자 비교(타입까지)
+                    if (wordHistory.includes(newWord)) {
+                        alert('이미 나온 단어입니다.');
+                    } else {
+                        word = newWord;                                     // 새글자를 제시어로 바꾸고                
+                        $word.textContent = word;                           // 제시어표출도 다시 받은 제시어로 바꾸기
+                        wordHistory.push(newWord);
+                    }
+                }
+                else {// 틀렸을 때                                  // 조건3x: 둘 다 아닌, 틀린경우
+                    alert('올바르지 않은 단어입니다.');
+                }
+            }
+            console.log(wordHistory);
+        }
+    };
+
+    const onInput = (event) => {
+        newWord = event.target.value;
+    };
+
+    $input.addEventListener('input', onInput);
+
+    $button.addEventListener('click', onClickButton);
+
+// 규칙1: 중복 단어는 안된다. -> 배열 이용해서
+
+</script>
