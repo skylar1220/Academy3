@@ -1,0 +1,39 @@
+<body>
+    <div>
+        <span id='order'>1</span>번째 참가자
+    </div>
+    <div>
+        제시어: <span id='word'></span>
+    </div>
+    <input type="text">
+    <button>입력</button>
+</body>
+
+<script>
+    const number = Number(prompt('참가자 수를 입력해주세요'));
+    const $order = document.querySelector('#order');
+    const $input = document.querySelector('input');
+    const $button = document.querySelector('button');
+    const $word = document.querySelector('#id');
+
+    let word;
+    let newWord;
+
+    const onClickButton = () => {
+        if (!word) {
+            word = newWord;
+            $word.textContent = word;
+        } else {
+
+        }
+        word === newWord;
+    }
+
+    const onInput = (event) => {
+        newWord = event.target.value;
+    }
+
+    $input.addEventListener('input', oninput);
+    $button.addEventListener('click', onClickButton);
+
+</script>
