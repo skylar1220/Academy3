@@ -9,12 +9,13 @@
         <button>확인</button>
         <br>
         <span></span>
+        <span>  </span>
     </div>
 </body>
 
 <!-- 태그객체 생성 -->
 <script>
-    const com_number = parseInt(Math.random() * 100 + 1);
+    let com_number = parseInt(Math.random() * 100 + 1);
     const $label = document.querySelector('label');
     const $input = document.querySelector('input');
     const $button = document.querySelector('button');
@@ -24,10 +25,13 @@
 
 <!-- 이벤트 등록 -->
 <script>
+    console.log(com_number);
     $button.addEventListener('click', () => {
         let human = parseInt($input.value);
         if (com_number == human) {
-            $span.textContent = '정답입니다.'
+            $span.textContent = '정답입니다. 새로운 수가 세팅됩니다'
+            com_number = parseInt(Math.random() * 100 + 1);
+            console.log(com_number);
         } else if (com_number < human) {
             $span.textContent = '크다.'
         } else {
