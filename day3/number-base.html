@@ -1,0 +1,108 @@
+<form id='form'>
+    <input type="number" id="input">
+    <!-- <input type="button" value="확인"> -->
+    <button>확인</button>
+    <!-- form 안의 버튼은 submit이 됨 -->
+</form>
+<div id="logs"></div>
+<script>
+
+    const $input = document.querySelector('#input');
+    const $form = document.querySelector('#form');
+    const $logs = document.querySelector('#logs');
+    const numbers = []; // 1 ~ 9
+    for (let index = 1; index < 9; index++) {
+        numbers.push(index);
+    }
+
+    const answer = [];
+    for (let i = 0; i < 3; i++) {
+        const index = Math.floor((Math.random() * numbers.length));  // 길이에 따라
+        answer.push(numbers[index]);
+        numbers.splice(index, 1);   // 중복 제거위해
+
+    }
+    console.log(answer);
+
+    let tries = [];
+    $form.addEventListener('submit', (event) => {
+        event.preventDefault() // 폼의 기본동작(새로고침)을 취소 
+        const value = $input.value;  //주의 문자열로 들어옮
+        $input.value = '';
+        const valid = checkInput(value); // 길이가 3글자, 중복, 이미시도한 값인지
+        tries.push(value);
+        if (!valid) return;
+        if (answer.join("") === value) {
+            $logs.textContent = '홈런!';
+            tries = [];
+            return;
+        } else {
+            let strike = 0 ;
+            let ball = 0 ;
+            // // foreach 버전
+            // answer.forEach( (element, idx) => {
+            //     if ( idx === value.indexOf(element)  ) {
+            //         strike ++;
+            //     } else if ( value.indexOf(element) != -1) {
+            //         ball++;
+            //     }
+            // });
+
+            for (let i = 0; i < answer.length; i++) { //@@ 여기 이해필!!
+                if ( i === value.indexOf(answer[i])  ) {
+                    strike ++;
+                } else if ( value.indexOf(answer[i]) != -1) { // 아예 없으면 -1이니까, -1이 아니면 있긴 하다는 거
+                    ball++;
+                }
+            }
+            $logs.textContent = '스트라이크 : ' +  strike + ', 볼 :  ' + ball;
+
+        }
+        if (tries.length >= 9) {
+            const message = document.createTextNode(`패배! 정답은 ${answer.join("")}`); // `
+            $logs.appendChild(document.createElement('br'));
+            $logs.appendChild(message);
+            return;
+        }
+    })
+
+
+    const checkInput = (input) => {
+        if (input.length != 3) {
+            return alert('3자리 숫자를 입력하세요');
+        }
+        if (new Set(input).size !== 3) {    // new Set('1123') -> '123'
+            return alert('중복되지 않게 입력해주세요');
+        }
+        if (tries.includes(input)) {
+            return alert('이미 시도한 값입니다.')
+
+        }
+        return true;
+
+    }
+
+</script>
+<!-- 
+    내림
+    - math.floor
+
+    중복되지 않으려면?
+    - 1~9를 미리 모아두고 하나씩 네 번 뽑으면 됨
+    - 단순한 값들의 나열이면 배열 사용 (0)
+    - 값에 이름이 붙는다면 객체 사용
+
+    <form id = 'form'>
+    - 데이터를 한 번에 관리 위해
+
+    event.preventDefault(); 
+    - 이벤트 받아오려고 하는 걸 취소시키는 역할
+    - form의 기본 동작을 취소
+
+    if (new Set (input).size !== 4){
+    - set 기능 중복 체크
+    - set은 length 아니라 size
+
+    if (tries.includes(input)) {
+
+ -->

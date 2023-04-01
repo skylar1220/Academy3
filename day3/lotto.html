@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<head>
+
+    <title>Document</title>
+</head>
+<style>
+    .ball {
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 20px;
+        /* 이게 반지름이라 원이 된 것 */
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        margin: 10px;
+    }
+</style>
+
+<body>
+    <div id="result">추첨 결과는?</div> <br>
+    <div id="bonus">보너스</div>
+    <div id = 'result'></div>
+
+</body>
+
+<script>
+    $result = document.querySelector('#result');
+    $bonus = document.querySelector('#bonus');
+    // 연속 배열 생성
+    const candidate = [];
+    for (let i = 1; i <= 45; i++) {
+        candidate.push(i);
+    }
+    // 생성된 배열을 섞기 @@ 이해필
+    for (let idx = 0; idx < 100 ; idx++) {
+        const i = Math.floor(Math.random() * candidate.length);
+        const j = Math.floor(Math.random() * candidate.length);
+        [candidate[i], candidate[j]] = [candidate[j], candidate[i]];
+    }
+    let lottoNums = candidate.slice(0,7); // .sort( (a,b) => a-b);   //오름차순 보너스 포함
+     
+    // var 는 함수범위
+    // let 은 블럭범위
+
+
+    // 타이머: 일정 시간 이후로 정해진 함수 도는 로직을 수행 - 한 번
+    for (var index = 0; index <6; index++) {
+        setTimeout(() => {
+        const $ball = document.createElement('div');
+        $ball.className = 'ball';
+        $ball.textContent = lottoNums[index];
+        $result.appendChild($ball);
+    }, 1000*3*(index+1));
+    }
+    setTimeout(() => {
+        const $ball = document.createElement('div');
+        $ball.className = 'ball';
+        $ball.textContent = lottoNums[lottoNums.length-1];
+        $bonus.appendChild($ball);
+    }, 1000*3*(lottoNums.length));
+ 
+
+    // 인터벌: 일정 시간 이후로 정해진 함수 도는 로직을 수행 - 계속
+    // setInterval(() => {
+    // }, 1000*3);
+
+
+    // setTimeout(() => {
+    //     alert('3초가 지났습니다.')
+    // }, 1000*3);
+    // alert('3초 후에 이 메시지가 보일까요?')
+
+    //     for (var index = 0; index <6; index++) {
+    //      
+    // 이렇게 var로 고치니 번호가 마지막 걸로만 다 똑같이 나오네...
+    // 이유: 범위가 함수 안에서만이라서 마지막값으로만 업데이트가 되어있음.
+    // let은 블럭단위
+
+    // if,for 같은 경우에는 오히려 var가 에러가 안나네? 
+    // if(true){
+    //     var a = 1;
+    // }
+    // console.log(a);
+    // var는 블럭을 초월함, 함수 단위라
+    // 그래서 오히려 var가 더 넓은 단위라고 할 수 있다.
+    // let은 저 if 문 안에서 계속 만들어지고 사라지고 하는 것
+
+
+</script>
+
+</html>
