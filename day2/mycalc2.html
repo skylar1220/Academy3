@@ -1,175 +1,140 @@
-<!-- 중간 이후부터 이해 필! -->
-<!-- 
-    - 섞지말고 단일부호인 경우 3,4개도 계산되게
-    - 두개 연산한 거 계속 값 갖고 있고
-    - 만약 섞는다면: 다음 연산자 누르는 순간 이전 계산은 자동으로 됨
- -->
 <style>
-    #operator {
-        width: 50px;
-        height: 50px;
-        margin: 5px;
-        text-align: center;
-
+    button{
+        width: 40px;
+        height: 40px;
+        margin : 5px;
+    }
+    #result{
+        width: 210px;
+        height: 40px;
+        margin-bottom : 5px;
+        margin-left : 5px;
+        text-align: right;
+    }
+    #calc{
+        width: 210px;
+        height: 20px;
+        margin : 5px;
+        text-align: right;
     }
 
-    #result {
-        width: 180px;
-        height: 50px;
-        margin: 5px;
-        text-align: center;
-    }
-
-    button {
-        width: 50px;
-        height: 50px;
-        margin: 5px;
-    }
 </style>
 
-<body>
-    <input readonly id='operator'>
-    <input readonly id='result'>
-    <br>
-    <button id="num-7">7</button>
-    <button id="num-8">8</button>
-    <button id="num-9">9</button>
-    <button id="plus">+</button>
-    <br>
-    <button id="num-4">4</button>
-    <button id="num-5">5</button>
-    <button id="num-6">6</button>
-    <button id="minus">-</button>
-    <br>
-    <button id="num-1">1</button>
-    <button id="num-2">2</button>
-    <button id="num-3">3</button>
-    <button id="divide">/</button>
-    <br>
-    <button id="clear">C</button>
-    <button id="num-0">0</button>
-    <button id="calculate">=</button>
-    <button id="multiply">x</button>
-
-</body>
-
-
-<script>
-    let did = 0;
-    const onClickNumber = (event) => {
-        if (operator) {
-            if (did==1) {
-                $result.value = '';
-            }
-            // 여기는 textContent: value 아님  그건 인풋박스같은 거에
-            numTwo += event.target.textContent;
-        }
-        else {
-            numOne += event.target.textContent;
-        }
-        $result.value += event.target.textContent;
-    }
+<body style="margin:auto">
+    <div>
+        <input disabled id = "calc"/>
+    </div>
+    <div>
+        <input readonly id = "result"/>
+    </div>
     
-    // const onClickResult = () => {
-    //     operator = $operator.value ;
-    //     switch (operator) {
-    //         case '+':
-    //         $result.value = Number(numOne)  +  Number(numTwo);
-    //             break;
-    //         case '-':
-    //         $result.value = Number(numOne)  -  Number(numTwo);
-    //             break;
-    //         case 'x':
-    //         $result.value = Number(numOne)  *  Number(numTwo);
-    //             break;
-    //         case '/':
-    //         $result.value = Number(numOne)  /  Number(numTwo);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    //
-    // }
-
-    const onClickOperator = (event) => {
-        if (numTwo) {
-            $result.value = Number(numOne)  +  Number(numTwo);
-            numOne = $result.value;
-            numTwo = '';
-            did = 1;
-        }
-        else{
-        $operator.value = operator = event.target.textContent;
-        $result.value = '';
-        }
-        
-
-    }
-
-</script>
-
+    <div>
+        <button id="btn_7",value = 7>7</button>
+        <button id="btn_8",value = 8>8</button>
+        <button id="btn_9",value = 9>9</button>
+        <button id="btn_plus">+</button>
+    </div>
+    <div>
+        <button id="btn_4",value = 4>4</button>
+        <button id="btn_5",value = 5>5</button>
+        <button id="btn_6",value = 6>6</button>
+        <button id="btn_minus">-</button>
+    </div>
+    <div>
+        <button id="btn_1",value = "1">1</button>
+        <button id="btn_2",value = 2>2</button>
+        <button id="btn_3",value = 3>3</button>
+        <button id="btn_div">/</button>
+    </div>
+    <div>
+        <button id="btn_C">C</button>
+        <button id="btn_0">0</button>
+        <button id="btn_equal">=</button>
+        <button id="btn_multi">*</button>
+    </div>
+    
+</body>
 <script>
-    let numOne = '';
-    let numTwo = '';
-    let operator = '';
-    const $operator = document.querySelector('#operator');
-    const $result = document.querySelector('#result');
-
-    document.querySelector('#num-0').addEventListener('click', onClickNumber);
-    document.querySelector('#num-1').addEventListener('click', onClickNumber);
-    document.querySelector('#num-2').addEventListener('click', onClickNumber);
-    document.querySelector('#num-3').addEventListener('click', onClickNumber);
-    document.querySelector('#num-4').addEventListener('click', onClickNumber);
-    document.querySelector('#num-5').addEventListener('click', onClickNumber);
-    document.querySelector('#num-6').addEventListener('click', onClickNumber);
-    document.querySelector('#num-7').addEventListener('click', onClickNumber);
-    document.querySelector('#num-8').addEventListener('click', onClickNumber);
-    document.querySelector('#num-9').addEventListener('click', onClickNumber);
-    document.querySelector('#plus').addEventListener('click', onClickOperator);
-    document.querySelector('#minus').addEventListener('click', onClickOperator);
-    document.querySelector('#divide').addEventListener('click', onClickOperator);
-    document.querySelector('#multiply').addEventListener('click', onClickOperator);
-    document.querySelector('#clear').addEventListener('click', () => {
-        $operator.value = '';
-        $result.value = '';
-        numOne = numTwo = operator = '';
-    });
-    document.querySelector('#calculate').addEventListener('click', () => {
-        operator = $operator.value ;
-        
-        switch (operator) {
-            case '+':
-            $result.value = Number(numOne)  +  Number(numTwo);
+    
+    const onclickNumber = (event)=>{
+        if(!CalcSimbol){
+            stack1 += event.target.textContent;
+            $text.value = stack1;
+        }else{
+            stack2 += event.target.textContent;
+            $text.value = stack2;
+        }
+        $calc.value = stack1+" "+CalcSimbol+" "+stack2;
+    }
+    const onClickSimbol = (event)=>{
+        if(!CalcSimbol){
+            CalcSimbol = event.target.textContent
+        }else{
+            onClickEqual();
+        }
+        $calc.value = stack1+" "+CalcSimbol+" "+stack2;
+    }
+    const onClickEqual = ()=>{
+       
+            switch (CalcSimbol) {
+            case "+":
+                $text.value = (stack1-0)+(stack2-0);
                 break;
-            case '-':
-            $result.value = Number(numOne)  -  Number(numTwo);
+            case "-":
+                $text.value = (stack1-0)-(stack2-0);
                 break;
-            case 'x':
-            $result.value = Number(numOne)  *  Number(numTwo);
+            case "*":
+                $text.value = (stack1-0)*(stack2-0);
                 break;
-            case '/':
-            $result.value = Number(numOne)  /  Number(numTwo);
+            case "/":
+                $text.value = (stack1-0)/(stack2-0);
                 break;
             default:
                 break;
-        }
+            }
+            $calc.value = stack1+" "+CalcSimbol+" "+stack2+" = "+$text.value;
+            stack1 = $text.value;
+            stack2= "";
         
-    });
+    }
+    const resetAll = ()=>{
+        tmp = stack2 = stack1 = value = CalcSimbol = calclist = "";
+        $text.value="";
+    }
+</script>
+<script>
+    let stack1="";
+    let stack2="";
+    let CalcSimbol = "";
+    let calclist = "";
+    let tmp="";
+    const $calc = document.querySelector("#calc");
+    const $text = document.querySelector("#result");
+    
+    document.querySelector("#btn_0").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_1").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_2").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_3").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_4").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_5").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_6").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_7").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_8").addEventListener("click",onclickNumber);
+    document.querySelector("#btn_9").addEventListener("click",onclickNumber);
+    
+    document.querySelector("#btn_plus").addEventListener("click",onClickSimbol);
+    document.querySelector("#btn_minus").addEventListener("click",onClickSimbol);
+    document.querySelector("#btn_multi").addEventListener("click",onClickSimbol);
+    document.querySelector("#btn_div").addEventListener("click",onClickSimbol);
+
+    document.querySelector("#btn_equal").addEventListener("click",onClickEqual);
+
+    document.querySelector("#btn_C").addEventListener("click",resetAll);
 </script>
 
 
 <!-- <script>
-    // 1.함수는 함수를 반환할 수 있다.
-    // const func = (msg) => {
-    //     return () => {
-    //         console.log(msg);
-    //     } ;
-    // }
-
-    // 2. return문을 생략하고 저렇게 쓸 수도 있다 (js 고차원함수)
-    const func = (msg) => () => { console.log(msg); }
-    const v1 = func('hello');
-    const v2 = func('javascript');
+    const func = (msg) =>()=>{return () =>{console.log(msg);}}
+    const v1 = func('aaaa');
     v1();
-    v2();
 </script> -->
