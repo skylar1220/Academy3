@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+        <!-- 
+        2) 버그 개선 후 버전, 근데 completed에서 못따라간 
+     -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카드맞추기</title>
+    <style>
+        .card{
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            width: 70px;
+            height: 100px;
+            perspective: 140px;
+        }
+
+        .card-inner{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            background: navy;
+            
+        }        
+        /*<div class = 'card flipped' >
+            <div class='card-inner'></div>
+        </div> */
+        .card.flipped .card-inner{
+            transform: rotateY(180deg);
+            /* background-color: navy; */
+        }
+        .card-front{
+            
+        }
+        .card-front, .card-back{
+            position: absolute;
+            width: 100%;     
+            height: 100%;
+            border : 1px solid black;
+            backface-visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper"></div>   
+</body>
+<script>
+    const $wrapper = document.querySelector('#wrapper');
+    const total = 12;  // 2장씩 6가지 색의 카드 생성
+    const colors = ['red','orange','yellow','green','white','pink'];
+    let colorCopy = colors.concat(colors)    
+    let shuffled = []
+    // parseInt(Math.random()*12)
+    // 카드 섞기
+    function shuffle(){  // 피셔-에이츠 셔플
+        for (let index = 0; 0 < colorCopy.length; index++) {
+            let randomIndex = parseInt(Math.random()*12);
+            shuffled = shuffled.concat(colorCopy.splice(randomIndex,1))
+        }
+    }
+    // 카드생성
+    function createCard(i){
+        const card = document.createElement('div');
+        card.className='card';
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner';
+        const cardBack = document.createElement('div');
+        cardBack.className = 'card-back';
+        cardBack.style.backgroundColor = shuffled[i];
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
+        return card;
+    }
+    function startGame(){
+        shuffle(); // 섞기
+        // 카드만들기
+        for (let index = 0; index < total; index++) {
+            const card = createCard(index);
+            $wrapper.appendChild(card);            
+        }
+        // 초반 카드 공개
+        document.querySelectorAll('.card').forEach( (card, idx) =>{
+            setTimeout(() => {
+               card.classList.add('flipped'); 
+            }, 1000 + 100*idx);
+        }  );
+
+        setTimeout(() => {
+            document.querySelectorAll('.card').forEach( (card, idx) =>{
+            card.classList.remove('flipped')
+        }  );
+        }, 5000);
+
+    }
+    startGame();
+
+</script>
+</html>
