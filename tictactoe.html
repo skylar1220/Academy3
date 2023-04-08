@@ -1,21 +1,27 @@
 <style>
+    table {
+        border-collapse: collapse;
+    }
 
-table{
-    border-collapse: collapse;
-}
-td{
-    border: 1px solid black;
-    width: 100px;
-    height: 100px;
-    font-size: 50px;
-    text-align: center;
+    td {
+        border: 1px solid black;
+        width: 100px;
+        height: 100px;
+        font-size: 50px;
+        text-align: center;
 
-}
+    }
+    #result{
+        color: green;
+        font-size: 20px;
+        font-weight: bold;
+
+    }
 </style>
 
 <body>
     <table>
-        <td id="t00">O</td>
+        <td id="t00"></td>
         <td id="t01"></td>
         <td id="t02"></td>
         <tr></tr>
@@ -32,8 +38,55 @@ td{
 </body>
 
 <script>
-    // @@ 이해필
-  
+    const $table = document.querySelectorAll('td');
+    const $result = document.querySelector('#result');
+    const $td = document.querySelector('#t00');
+
+    const matrics = [[00, 01, 02], [10, 11, 12], [20, 21, 22]];
+    // matrics[0][0]
+
+    const checkWinner = (m, a, b) => {
+        for (let i = 0; i < 3; i++) {
+            if (m[i][0] === m[i][1] && m[i][0] === m[i][2]) {
+                $result.textContent = m[a][b];
+            }
+        }
+        for (let i = 0; i < 3; i++) {
+            if (m[0][i] === m[1][i] && m[0][i] === m[2][i]) {
+            $result.textContent = m[a][b];
+        }
+        }
+        if (m[0][0] === m[1][1] && m[0][0] === m[2][2]) {
+            $result.textContent = m[a][b];
+        }
+        if (m[2][0] === m[1][1] && m[2][0] === m[0][2]) {
+            $result.textContent = m[a][b];
+        }
+    }
+
+    let mark = 'X';
+    const callback = (event) => {
+        if (event.target.textContent) {
+            alert('이미 선택한 칸입니다.');
+        }
+        else {
+            mark = mark === 'X' ? 'O' : 'X';
+            event.target.textContent = mark;
+            let a = parseInt(event.target.id.substr(1, 1));
+            let b = parseInt(event.target.id.substr(2, 1));
+            matrics[a][b] = mark;
+            checkWinner(matrics, a, b);
+            if ($result.textContent) {
+                $result.textContent += '가 승리!';
+            }
+        }
+    };
+
+    $table.forEach(td => {
+        td.addEventListener('click', callback)
+    });
+
+
 
     // 이중포문 사용하기?
     // 아님 클릭한 걸 0 0 기준으로 가로 세로 대각선을 따지면 될 것 같은데? (귀퉁이, 완전 중간애)
@@ -42,35 +95,9 @@ td{
 
 
 
-  
+
+
+
+
 
 </script>
-
-
-<!-- 
-    table 태그
-    - 
-
-    td
-    - 테이블 디스크립션
-
-    border-collapse: collapse;
-    - 칸 사이 공간 붙이기 
-
-    event.target.id.split(1,2)
-    - 가져오기
- -->
-
-
-<!-- const checkWinner()
-    원래 이랬던 걸 반복문으로 줄인 것
- else if (m[0][0] !== null && m[0][0] === m[1][0] && m[0][0] === m[2][0]) {
-    $result.textContent = m[0][0];
-
-} else if (m[0][1] !== null && m[0][1] === m[1][1] && m[0][1] === m[2][1]) {
-    $result.textContent = m[0][1];
-
-} else if (m[0][2] !== null && m[0][2] === m[1][2] && m[0][2] === m[2][2]) {
-    $result.textContent = m[0][2];
-
-} -->
