@@ -1,0 +1,247 @@
+<!-- 
+
+백그라운드:
+    타이머를 처리하고 이벤트리스너를 저장하는 공간
+    setTimeout 함수가 실행되면
+    - 백그라운드에서 시간을 재고 시간이 되면 setTimeout의 콜백 함수를 태스크 큐에 보냄
+    addEventListerner로 추가한 이벤트를 저장했다가 이벤트가 발생하면 콜백함수를 태스크 큐로 보냄
+    실행될 함수들이 태스크 큐로 들어감
+
+태스크 큐
+    줄서기: 실행될 콜백 함수들이 줄을 서서 대기하는 공간
+    선입선출(First in First out) 구조..
+    태스크 큐는 직접함수를 실행하지 않음
+    함수는 모두 호출 스택에서 실행
+    호출 스택에 들어간 함수가 실행된다고 보면 됨
+
+이벤트 루프
+    태스크 큐에서 호출 스택으로 함수를 이동시키는 존재
+    호출 스택이 비어있으면 이벤트 루프는 태스크 큐에서 함수를 하나씩 꺼내(들어온 순서대로) 호출 스택으로 옮김
+    호출스택으로 이동한 함수는 그 때 실행
+    실행이 완료된 함수는 호출 스택에서 빠져나감
+    호출 스택이 비면 이벤트 루프는 태스크 큐에서 다음 함수를 호출 스택으로 옮김
+    
+anonymous 함수
+    호출 스택과 이벤트 루프는 함수 호출과 밀접한 관계
+    소스코드에서 함수가 호출되는 첫번째 순간 
+        startGame()
+    자바스크립트 엔진은 자바스크립트 소스 코드가 처음 실행되는 순간에도 하나의 함수가 실행
+    크롬 브라우저는 이를 anonymous하는 함수로 표시
+
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- 
+        3) 버그 개선 최종 완료
+     -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카드맞추기</title>
+    <style>
+        .card {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            width: 70px;
+            height: 100px;
+            perspective: 140px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front {
+            background: navy;
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper"></div>
+</body>
+<script>
+    const $wrapper = document.querySelector('#wrapper');
+    const colors = ['red', 'orange', 'yellow' , 'green', 'white', 'pink'];
+    // const colors = ['red','orange','yellow'];
+    let colorCopy = colors.concat(colors)
+    const total = colors.length *2;  // 2장씩 6가지 색의 카드 생성
+    let shuffled = []
+    let cliced = []  // 클릭한 카드 배열 변수 선언
+    let completed = [] // 정답일때.
+    let clickable = false;
+    // 색상을 랜덤하게 생성하는 함수(사용 예정)
+    // function randomRGBGeneration(){
+    //     const r = Math.floor(Math.random()*255);
+    //     const g = Math.floor(Math.random()*255);
+    //     const b = Math.floor(Math.random()*255);
+    //     return [r,g,b];
+    // }
+    // for (let index = 0; index < total; index++) {
+    //     colors.push(randomRGBGeneration());
+
+    // }
+
+    // parseInt(Math.random()*12)
+    // 카드 섞기
+    function shuffle() { // 피셔-예이츠 셔플
+        for (let i = 0; colorCopy.length > 0; i += 1) {
+            const randomIndex = Math.floor(Math.random() * colorCopy.length);
+            shuffled = shuffled.concat(colorCopy.splice(randomIndex, 1));
+        }
+    }
+    // 카드생성
+    function createCard(i) {
+        const card = document.createElement('div');
+        card.className = 'card'; // .card 태그 생성
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner'; // .card-inner 태그 생성
+        const cardFront = document.createElement('div');
+        cardFront.className = 'card-front'; // .card-front 태그 생성
+        const cardBack = document.createElement('div');
+        cardBack.className = 'card-back'; // .card-back 태그 생성
+        cardBack.style.backgroundColor = shuffled[i];
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
+        return card;
+    }
+    // 카드를 클릭하면 뒤집고 클릭한 카드를 배열에 추가
+    function onClickCard() {
+        // tihs --> 현재 클릭한 객체
+        // 초반에 카드를 보여주고 다시 숨길때가지 클릭 이벤트 방지 : clickable
+        // 같은 카드를 연속으로 열수 없게 cliced[0] === this
+        // 이미 맞춘카드는 다시 뒤집을 수 없다 completed.includes(this)
+        if (!clickable || cliced[0] === this || completed.includes(this)) {
+            return;
+        }
+
+        this.classList.toggle('flipped');
+        cliced.push(this);
+        if (cliced.length !== 2) {
+            return;
+        }
+        const firstBackColor = cliced[0].querySelector('.card-back').style.backgroundColor;
+        const secondBackColor = cliced[1].querySelector('.card-back').style.backgroundColor;
+        // 두개의 카드색상이 같지 않으면 다시 뒤집는다
+        if (firstBackColor !== secondBackColor) {
+            // 카드를 뒤집지만 틀렸을때 너무빨리 다시 뒤집에서 원래 뒤집은게 안보임
+            // 시차를 두고 뒤집음
+            setTimeout(() => {
+                cliced.forEach(obj => {
+                    obj.classList.remove('flipped');
+                    cliced = [];
+                });
+            }, 500);
+        } else {
+            completed.push(cliced[0]);
+            completed.push(cliced[1]);
+            setTimeout(() => {
+                if (completed.length === total) {
+                    alert("다 맞추셨습니다.");
+                    // 초기화
+                    colorCopy = colors.concat(colors)
+                    shuffled = [];
+                    cliced = []  // 클릭한 카드 배열 변수 선언
+                    completed = [] // 정답일때.
+                    clickable = false;
+
+                    // 기존 노드에 추가되어있던 카드 div를 젲거
+                    while ($wrapper.firstChild) {
+                        $wrapper.removeChild($wrapper.firstChild);
+                    }
+                    startGame();
+                    // @@ 덮었다가
+                    // @@ 다시 섞이고
+                    // @@ 다시 보여주고
+                    // document.querySelectorAll('.card').forEach((card, idx) => {
+                    //     card.classList.remove('flipped')
+                    // });
+                    // shuffle();
+                    // cardinit();
+
+
+
+                }
+            }, 1000);
+
+            cliced = [];
+        }
+
+    }
+    function makeCard() {
+        // 카드만들기
+        for (let index = 0; index < total; index++) {
+            const card = createCard(index);
+            card.addEventListener('click', onClickCard);
+            $wrapper.appendChild(card);
+        }
+    }
+
+    function cardinit() {
+        // 초반 카드 공개
+        document.querySelectorAll('.card').forEach((card, idx) => {
+            setTimeout(() => {
+                card.classList.add('flipped');
+            }, 1000 + 100 * idx);
+        });
+        // 카드 숨김
+        setTimeout(() => {
+            document.querySelectorAll('.card').forEach((card, idx) => {
+                card.classList.remove('flipped')
+            });
+            clickable = true;
+        }, 5000);
+    }
+
+
+    function startGame() {
+        // 섞기
+        shuffle();
+
+        // 카드만들기
+        makeCard();
+
+        // 초반 카드 공개
+        // 카드 숨김
+        cardinit();
+
+        // 초기화
+
+    }
+    startGame();
+
+</script>
+
+</html>
+
+
+<!-- const wrapper = document.createElement('div');
+wrapper.id = 'wrapper'; // wrapper 태그 생성
+wrapper.appendChild(card); -->
